@@ -11,8 +11,6 @@ import gjsStyleBg from "grapesjs-style-bg";
 import gjsNavbar from "grapesjs-navbar";
 
 
-
-
 export default function PageBuilder({ id = null, title = '', html = '', css = '', components = '', styles = '' , status: initialstatus = "" ,seoTitle:initialSeo="" ,seoDescription:initialDesc="" ,seoKeywords:initialKey=""}) {
   const editorRef = useRef(null);
   const editor = useRef(null);
@@ -157,8 +155,8 @@ function refreshMediaLibrary() {
         label: "ul",
         media: `
         <svg class="w-20 h-20 text-stone-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-  <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5"/>
-</svg>
+            <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5"/>
+        </svg>
         ` ,
         content: `
         <ul>

@@ -21,15 +21,18 @@ function renderShortcodes($content)
         foreach ($attrMatches as $attr) {
             $attrs[$attr[1]] = $attr[2];
         }
-        return view('Shortcodes', [
-            'title' => $attrs['title'] ?? '',
-            'image' => $attrs['image'] ?? '',
-            'description' => urldecode($attrs['description'] ?? ''),
-            'style' => urldecode($attrs['cardStyle'] ?? ''),
-            'titleStyle' => urldecode($attrs['titleStyle'] ?? ''),
-            'imageStyle' => urldecode($attrs['imageStyle'] ?? ''),
-            'descriptionStyle' => urldecode($attrs['descriptionStyle'] ?? ''),
-        ])->render();
+  return view('Shortcodes', [
+    'title' => $attrs['title'] ?? '',
+    'image' => $attrs['image'] ?? '',
+    'description' => urldecode($attrs['description'] ?? ''),
+
+    'cardStyle' => $attrs['cardStyle'] ?? '{}',
+    'titleStyle' => $attrs['titleStyle'] ?? '{}',
+    'imageStyle' => $attrs['imageStyle'] ?? '{}',
+    'descriptionStyle' => $attrs['descriptionStyle'] ?? '{}',
+])->render();
+
+
 
     }, $content);
 }

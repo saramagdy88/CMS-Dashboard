@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import grapesjs from "grapesjs";
 import "grapesjs/dist/css/grapes.min.css";
 import { Inertia } from "@inertiajs/inertia";
-// import pluginCKEditor from 'grapesjs-plugin-ckeditor';
+
 
 export default function CreatePost({id = null,  categories = [] ,title: initialTitle = "",content: initialContent = "" ,status: initialstatus = "" ,category: initialCategory = "" ,seoTitle:initialSeo="" ,seoDescription:initialDesc="" ,seoKeywords:initialKey=""}) {
   const editorRef = useRef(null);
@@ -185,26 +185,17 @@ editor.current.Components.addType("card-component", {
   },
 });
 
-
 editor.current.BlockManager.add("Simple Card", {
   label: "Card",
   category: "Components",
   content: {
     type: "card-component",
-    
   },
 });
-
 
 editor.current.AssetManager.add([
  
 ]);
-
-
-
-
-
-
 
 if (initialContent) {
   const matches = [...initialContent.matchAll(/\[card(.*?)\]/g)];
@@ -221,8 +212,6 @@ const safeStyle = (styleStr) => {
   return styleStr.replace(/"/g, '&quot;');
 };
 
-
-
 editor.current.addComponents(`
  <div class="card" style="${safeStyle(attrs.cardStyle || '')}">
     <img src="${attrs.image || '/placeholder.jpg'}" style="${safeStyle(attrs.imageStyle || '')}" class="mb-2 rounded" />
@@ -231,12 +220,14 @@ editor.current.addComponents(`
   </div>
 `);
 
-
   });
 }
 
 
-    }
+}
+
+
+
   }, []);
 
   const getAllCardComponents = () => {
@@ -258,16 +249,26 @@ editor.current.addComponents(`
     traverse(rootComponents);
 
     return allComponents;
-  };const handleSave = () => {
+  };
+  
+  const handleSave = () => {
   const wrapperEl = editor.current.getWrapper().view.el;
   const cards = wrapperEl.querySelectorAll(".card");
   const shortcodes = [];
-
-  const getStyleString = (element) => {
-    if (!element) return '';
-    const computed = window.getComputedStyle(element);
-    return `color:${computed.color}; background-color:${computed.backgroundColor};font-size:${computed.fontSize};font-family:${computed.fontFamily};font-weight:${computed.fontWeight};font-style:${computed.fontStyle}; text-decoration:${computed.textDecoration};`;
+//save style as json 
+const getStyleObject = (element) => {
+  if (!element) return {};
+  const computed = window.getComputedStyle(element);
+  return {
+    color: computed.color,
+    backgroundColor:computed.backgroundColor,
+    fontSize: computed.fontSize,
+    fontFamily: computed.fontFamily,
+    fontWeight: computed.fontWeight,
+    fontStyle: computed.fontStyle,
+    textDecoration: computed.textDecoration,
   };
+};
 
   cards.forEach(card => {
     const titleEl = card.querySelector("h2");
@@ -279,22 +280,17 @@ editor.current.addComponents(`
     const description = descEl?.innerHTML || '';
 
 
+const cardStyle = encodeURIComponent(JSON.stringify(getStyleObject(card)));
+const titleStyle = encodeURIComponent(JSON.stringify(getStyleObject(titleEl)));
+const imgStyle = encodeURIComponent(JSON.stringify(getStyleObject(imgEl)));
+const descStyle = encodeURIComponent(JSON.stringify(getStyleObject(descEl)));
 
-    const cardStyle = card.getAttribute("style") || getStyleString(card);
-    const titleStyle = titleEl?.getAttribute("style") || getStyleString(titleEl);
-    const imgStyle = imgEl?.getAttribute("style") || getStyleString(imgEl);
-    const descStyle = descEl?.getAttribute("style") || getStyleString(descEl);
 
-    shortcodes.push(
- 
+shortcodes.push(
   `[card title="${title}" image="${image}" description="${encodeURIComponent(description)}" ` +
-  `cardStyle="${encodeURIComponent(cardStyle)}" ` +
-  `titleStyle="${encodeURIComponent(titleStyle)}" ` +
-  `imageStyle="${encodeURIComponent(imgStyle)}" ` +
-  `descriptionStyle="${encodeURIComponent(descStyle)}"]`
+  `cardStyle="${cardStyle}" titleStyle="${titleStyle}" imageStyle="${imgStyle}" descriptionStyle="${descStyle}"]`
+);
 
-
-    );
   });
 
   const content = shortcodes.join("\n");
