@@ -1,0 +1,84 @@
+<?php
+
+use App\Http\Controllers\ProfileController;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\MediaController;
+
+
+
+
+
+
+Route::get('/', function () {
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
+});
+
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+
+Route::get('/user/dashboard', function () {
+    return Inertia::render('UserDashboard');
+})->middleware(['auth', 'verified'])->name('user.dashboard');
+
+
+Route::resource('user', UserController::class);
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
+
+
+
+Route::get('/charts', function () {
+    return Inertia::render('Charts');
+})->middleware(['auth']);
+
+
+
+// Middleware
+Route::middleware(['auth', 'permission:Posts'])->group(function () {
+    Route::resource('posts', PostController::class);
+});
+
+Route::middleware(['auth', 'permission:Pages'])->group(function () {
+
+Route::get('/page-builder', function () {
+    return Inertia::render('PageBuilder');
+})->name('page.builder');
+
+
+Route::post('/pages', [PageController::class, 'store'])->name('pages.store');
+Route::get('/pages/index', [PageController::class, 'index'])->name('pages.index');
+
+
+// show page using slug
+Route::get('/pages/{page:slug}', [PageController::class, 'show'])->name('pages.show');;
+
+Route::delete('/pages/{id}/delete', [PageController::class, 'destroy'])->name('pages.destroy');
+
+Route::get('/pages/{id}/edit', [PageController::class, 'edit'])->name('pages.edit');
+
+Route::put('/pages/{id}/update', [PageController::class, 'update'])->name('pages.update');
+});
+
+// Media
+Route::post('/media/upload', [MediaController::class, 'upload'])->name('media.upload');
+Route::get('/media/list', [MediaController::class, 'index'])->name('media.list');
+
+Route::post('/media/delete', [MediaController::class, 'delete']);
