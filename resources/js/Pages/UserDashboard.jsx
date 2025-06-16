@@ -13,7 +13,7 @@ export default function UserDashboard() {
                            User Dashboard
                         </h2>
 
-                        {auth.user.role==="user" && auth.user.permission.includes('Posts') && (
+                        {/* {auth.user.role==="user" && auth.user.permission.includes('Posts') && (
                             <div className='py-6 text-center flex justify-center gap-10'>
                             <Link
                                 href={route('posts.create')}
@@ -29,7 +29,7 @@ export default function UserDashboard() {
                                 All Posts
                             </Link>
                             </div>
-                        )}
+                        )} */}
 
 
                           {auth.user.role==="user" && auth.user.permission.includes('Pages') && (

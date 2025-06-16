@@ -3,11 +3,11 @@ import { Link } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 
 
-export default function ViewPost({ posts }) {
+export default function ViewPost({ posts ,postType }) {
 
   const handleDelete = (id) => {
     if (confirm('Are you sure to delete this post?')) {
- router.delete(route('posts.destroy', id));
+ router.delete(route('post.destroy', id));
     }
   }
 
@@ -48,7 +48,7 @@ export default function ViewPost({ posts }) {
                         {post.id}
                         </th>
                         <td class="px-6 py-4 font-bold">
-                            <Link href={route('posts.show', post.id)} className="text-teal-800 underline text-md">
+                            <Link href={route('post.show' ,post.id)}  className="text-teal-800 underline text-md">
                             {post.title}
                           </Link>
                     </td>
@@ -100,13 +100,16 @@ export default function ViewPost({ posts }) {
                 </button>
                 </td>
 
+
                 <td className="px-3 py-4">
-               <Link
-                href={route('posts.edit', post.id)}
+      
+                <Link
+                href={route('post.edit', { id: post.id, slug: postType.slug })}
                 className="text-blue-600 hover:underline"
-            >
+                >
                 Edit
-            </Link>
+                </Link>
+
                 </td>
                     </tr>
                     ))}

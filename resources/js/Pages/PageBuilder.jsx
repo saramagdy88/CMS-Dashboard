@@ -392,15 +392,6 @@ Inertia.post(route('pages.store'), data, {
         placeholder="Add Page title .."
         className="border p-3 border-gray-400 rounded-md mb-4 w-50"
       />
-{/* 
-      <input
-  type="text"
-  value={slug}
-  onChange={(e) => setSlug(e.target.value)}
-  placeholder="Page Slug"
-  className="border p-3 border-gray-400 rounded-md mb-4 w-50"
-/> */}
-
 
 <select name="status" id="" value={status}
  onChange={(e) => setStatus(e.target.value)}

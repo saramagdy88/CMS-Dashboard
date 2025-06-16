@@ -2,6 +2,8 @@
 
 namespace App\Models;
 use App\Models\Category ;
+use App\Models\Post_type ;
+
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -40,9 +42,14 @@ public function getComponentIdAttribute()
 
 
 
-    public function category()
+public function category()
 {
     return $this->belongsTo(Category::class);
+}
+
+public function post_type()
+{
+    return $this->belongsTo(Post_type::class);
 }
 
 

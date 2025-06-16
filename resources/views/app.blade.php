@@ -18,10 +18,12 @@
         @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
         @inertiaHead
 
-
+<script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     </head>
     <body class="font-sans antialiased">
         @inertia
+
+
 
     </body>
 </html>

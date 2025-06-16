@@ -2,7 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import ExampleChart from '@/Components/Chartcol';
 import Chartwo from '@/Components/Chartwo';
-import Sidebar from '@/Components/Sidebar';
+import Sidebar from '@/Components/SidebarComp';
 
 export default function Charts({ auth }) {
   return (
