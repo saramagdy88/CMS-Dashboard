@@ -2,7 +2,11 @@
 
 namespace App\Models;
 use App\Models\Category ;
+use App\Models\Highlight ;
+
 use App\Models\Post_type ;
+use App\Models\Tag ;
+
 
 
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +17,6 @@ class Post extends Model
         'title',
         'content',
         'status',
-        'category_id',
         'seo_title',
         'seo_description',
         'seo_keywords'
@@ -42,15 +45,26 @@ public function getComponentIdAttribute()
 
 
 
-public function category()
-{
-    return $this->belongsTo(Category::class);
-}
-
 public function post_type()
 {
     return $this->belongsTo(Post_type::class);
 }
+
+public function categories()
+{
+    return $this->belongsToMany(Category::class);
+}
+
+public function tags()
+{
+    return $this->belongsToMany(Tag::class ,'tag_post');
+}
+
+public function highlights()
+{
+    return $this->belongsToMany(Highlight::class ,'highlight_post');
+}
+
 
 
 }

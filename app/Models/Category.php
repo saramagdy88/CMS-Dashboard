@@ -18,5 +18,11 @@ public function postTypes()
     return $this->belongsToMany(Post_type::class,'category_post_type');
 }
 
+public function posts()
+{
+    return $this->belongsToMany(Post::class);
+}
+
+
 
 }

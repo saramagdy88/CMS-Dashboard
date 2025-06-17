@@ -11,8 +11,8 @@ use App\Http\Controllers\MediaController;
 use App\Http\Controllers\PostTypeController;
 use App\Http\Controllers\TourController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\TaxonomyController;
-
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\HighlightController;
 
 
 
@@ -117,4 +117,10 @@ Route::get('/post/{slug}', [PostController::class, 'index'])->name('post.index')
 Route::resource('post_type', PostTypeController::class);
 
 Route::resource('category', CategoryController::class);
+
+Route::resource('tag', TagController::class);
+
+Route::resource('highlight', HighlightController::class);
+
+
 

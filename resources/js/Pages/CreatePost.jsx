@@ -4,16 +4,22 @@ import "grapesjs/dist/css/grapes.min.css";
 import { Inertia } from "@inertiajs/inertia";
 
 
-export default function CreatePost({id = null, categories = [], postType = {} ,title: initialTitle = "",content: initialContent = "" ,status: initialstatus = "" ,category: initialCategory = "" ,seoTitle:initialSeo="" ,seoDescription:initialDesc="" ,seoKeywords:initialKey="" }) {
+export default function CreatePost({id = null, categories = [], postType = {},selectedCategories,tags=[],highlights=[],  selectedTags = [],
+  selectedHighlights = [],title: initialTitle = "",content: initialContent = "" ,status: initialstatus = "" ,category: initialCategory = "" ,seoTitle:initialSeo="" ,seoDescription:initialDesc="" ,seoKeywords:initialKey="" }) {
   
 
-   const [typeSlug, setTypeSlug] = useState(postType.slug || '');
+  const [typeSlug, setTypeSlug] = useState(postType.slug || '');
   const editorRef = useRef(null);
   const editor = useRef(null);
   const [title, setTitle] = useState(initialTitle);
-  const [category, setCategory] = useState(initialCategory);
+  const [category, setCategory] = useState(Array.isArray(initialCategory) ? initialCategory : []);
+
+
   const [allCategories, setAllCategories] = useState(categories);
   const [status, setStatus] = useState(initialstatus);
+  const [selectedCategoriesp, setSelectedCategoriesp] = useState(selectedCategories || []);
+  const [selectedTagsp, setSelectedTagsp] = useState(Array.isArray(selectedTags) ? selectedTags : []);
+  const [selectedHighlightsp, setSelectedHighlightsp] = useState(Array.isArray(selectedHighlights) ? selectedHighlights : []);
 
   //SEO
    const [seoTitle, setSeoTitle] = useState(initialSeo);
@@ -21,7 +27,6 @@ export default function CreatePost({id = null, categories = [], postType = {} ,t
    const [seoKeywords, setSeoKeywords] = useState(initialKey);
    const [slug, setSlug] = useState('');
  
-  console.log('PostType Data:', postType);
 
   useEffect(() => {
     if (editorRef.current && !editorRef.current.hasChildNodes()) {
@@ -147,7 +152,13 @@ editor.current.Components.addType("card-component", {
 
         if (titleEl && title) titleEl.innerText = title;
         if (imageEl && image) imageEl.src = image;
-        if (descEl && description) descEl.innerHTML = decodeURIComponent(description);
+      if (descEl && description) {
+    const editor = grapesjs.editors[0]; 
+    const descComp = editor.DomComponents.getWrapper().find('[data-description]')[0];
+    if (descComp) {
+      descComp.components(decodeURIComponent(description));
+    }
+  }
 }
     },
     init() {
@@ -361,13 +372,6 @@ editor.current.addComponents({
 });
 
 
-// editor.current.addComponents(`
-//  <div class="card" style="${safeStyle(attrs.cardStyle || '')}">
-//     <img src="${attrs.image || '/placeholder.jpg'}" style="${safeStyle(attrs.imageStyle || '')}" class="mb-2 rounded" />
-//     <h2 style="${safeStyle(attrs.titleStyle || '')}">${attrs.title || 'Default Title'}</h2>
-//     <div style="${safeStyle(attrs.descriptionStyle || '')}">${attrs.description || 'Default Description'}</div>
-//   </div>
-// `);
 
   });
 }
@@ -407,6 +411,7 @@ editor.current.addComponents({
   const shortcodes = [];
 
   //save style as json 
+
   const getStyleObject = (element) => {
   if (!element) return {};
   const computed = window.getComputedStyle(element);
@@ -443,9 +448,6 @@ cards.forEach(card => {
   );
 });
 
-
-
-
   const content = shortcodes.join("\n");
 
   if (!title) {
@@ -455,13 +457,17 @@ cards.forEach(card => {
 
   if (id) {
     console.log(id,typeSlug)
-    Inertia.put(route("post.update", { id: id, slug: typeSlug }), { title, content ,category,status , seoTitle:seoTitle,
+    Inertia.put(route("post.update", { id: id, slug: typeSlug }), { title, content ,category:selectedCategoriesp,status , seoTitle:seoTitle,
         seoDescription:seoDescription,
+          tags: selectedTagsp,
+          highlights: selectedHighlightsp,
           post_type_slug: typeSlug,
         seoKeywords:seoKeywords ,});
   } else {
-    Inertia.post(route("post.store"), { title, content ,category,status, seoTitle:seoTitle,
+    Inertia.post(route("post.store"), { title, content ,category:selectedCategoriesp ,status, seoTitle:seoTitle,
         seoDescription:seoDescription,
+            tags: selectedTagsp,
+          highlights: selectedHighlightsp,
           post_type_slug: typeSlug,
         seoKeywords:seoKeywords , });
   }
@@ -506,7 +512,10 @@ cards.forEach(card => {
 </div>
 
 
+<hr />
+<div className="p-4">
 
+<h2 className="text-lg font-bold mb-2">Post Details</h2>
       <input
         type="text"
         placeholder="Post Title"
@@ -514,23 +523,8 @@ cards.forEach(card => {
         onChange={(e) => setTitle(e.target.value)}
         className="border-gray-400 rounded p-2 m-4 w-72"
       />
-  <label className="font-bold text-gray-700 ">Category :</label>
 
-<select
-  name="category"
-  value={category}
-  onChange={(e) => setCategory(e.target.value)}
-  className="border m-4 w-50 border-gray-400 rounded"
->
-  <option value="" disabled>Select Post Category</option>
-  {allCategories.map((cat) => (
-    <option key={cat.id} value={cat.id}>
-      {cat.name}
-    </option>
-  ))}
-</select>
-
-<select name="status" id="" value={status}
+      <select name="status" id="" value={status}
  onChange={(e) => setStatus(e.target.value)}
    className="border m-4 w-50 border-gray-400 rounded" 
  >
@@ -540,12 +534,86 @@ cards.forEach(card => {
   <option value="publish" >Publish</option>
 </select>
 
-      <button
+      <br></br>
+<label className="font-bold text-gray-700">Category:</label>
+<div className="m-4 space-y-2">
+
+{allCategories.map((cat) => (
+  <label key={cat.id} className="flex items-center space-x-2 my-2">
+    <input
+      type="checkbox"
+      value={cat.id}
+      checked={selectedCategoriesp.includes(cat.id)}
+      onChange={(e) => {
+        const id = parseInt(e.target.value);
+        if (e.target.checked) {
+          setSelectedCategoriesp([...selectedCategoriesp, id]);
+        } else {
+          setSelectedCategoriesp(selectedCategoriesp.filter((c) => c !== id));
+        }
+      }}
+    />
+    <span>{cat.name}</span>
+  </label>
+))}
+
+</div>
+
+<label className="font-bold text-gray-700">Tags:</label>
+<div className="m-4 space-y-2">
+  {tags.map((tag) => (
+    <label key={tag.id} className="flex items-center space-x-2 my-2">
+      <input
+        type="checkbox"
+        value={tag.id}
+        checked={selectedTagsp.includes(tag.id)}
+        onChange={(e) => {
+          const id = parseInt(e.target.value);
+          if (e.target.checked) {
+            setSelectedTagsp([...selectedTagsp, id]);
+          } else {
+            setSelectedTagsp(selectedTagsp.filter((t) => t !== id));
+          }
+        }}
+      />
+      <span>{tag.name}</span>
+    </label>
+  ))}
+</div>
+
+<label className="font-bold text-gray-700">Highlights:</label>
+<div className="m-4 space-y-2">
+  {highlights.map((high) => (
+    <label key={high.id} className="flex items-center space-x-2 my-2">
+      <input
+        type="checkbox"
+        value={high.id}
+        checked={selectedHighlightsp.includes(high.id)}
+        onChange={(e) => {
+          const id = parseInt(e.target.value);
+          if (e.target.checked) {
+            setSelectedHighlightsp([...selectedHighlightsp, id]);
+          } else {
+            setSelectedHighlightsp(selectedHighlightsp.filter((h) => h !== id));
+          }
+        }}
+      />
+      <span>{high.name}</span>
+    </label>
+  ))}
+</div>
+
+
+  <button
         onClick={handleSave}
         className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
       >
         {id ? "Update Post" : "Save Post"}
       </button>
+
+</div>
+  
+    
     </div>
   );
 }

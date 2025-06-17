@@ -12,7 +12,8 @@ import { ImFilesEmpty } from "react-icons/im";
 import { RiEditBoxFill } from "react-icons/ri";
 import { LuFileText } from "react-icons/lu";
 import { TbCategory } from "react-icons/tb";
-
+import { BsTags } from "react-icons/bs";
+import { PiHighlighter } from "react-icons/pi";
 export default function SidebarComp() {
 
   const [types, setTypes] = useState([]);
@@ -117,25 +118,14 @@ export default function SidebarComp() {
                                    icon={() => <BiSolidCategoryAlt className="text-white text-2xl group-hover:text-gray-800" />}
                                 >All Categories</SidebarItem>
 
-                         {/* <SidebarCollapse 
-                                label="Category" 
-                                className='group text-white hover:text-gray-900 font-bold'
-                                   icon={() => <BiSolidCategoryAlt className="text-white text-2xl group-hover:text-gray-800" />}
-                             
-                            >
-                               <SidebarItem href={route('category.create')} className='text-white hover:text-gray-900 '
-                                   icon={() => <TiEdit className="text-white text-2xl group-hover:text-gray-800" />}
-                                >Create Category</SidebarItem>
+                                  <SidebarItem href={route('tag.index')} className='group text-white hover:text-gray-900 font-bold'
+                                   icon={() => <BsTags className="text-white text-2xl group-hover:text-gray-800" />}
+                                >All Tags</SidebarItem>
+                              
 
-                                <SidebarItem href={route('category.index')} className='text-white hover:text-gray-900 '
-                                   icon={() => <ImFilesEmpty className="text-white text-2xl group-hover:text-gray-800" />}
-                                >All Categories</SidebarItem>
-
-                            </SidebarCollapse> */}
-
-
-
-
+                                  <SidebarItem href={route('highlight.index')} className='group text-white hover:text-gray-900 font-bold'
+                                   icon={() => <PiHighlighter className="text-white text-2xl group-hover:text-gray-800" />}
+                                >All Highlight</SidebarItem>
 
                           <SidebarItem href={route('post_type.create')} className='group text-white hover:text-gray-900 font-bold'
                            icon={() => <MdOutlinePostAdd className="text-white font-bold text-2xl group-hover:text-gray-800" />}
@@ -163,7 +153,16 @@ export default function SidebarComp() {
                                    <SidebarItem href={route('category.create') + `?type=${type.slug}`} className='text-white font-bold text-sm hover:text-gray-900 ' 
                                       icon={() => <TbCategory className="text-white text-2xl group-hover:text-gray-800" />}
                                 >
-                                     Add New Category</SidebarItem> 
+                                     Add Category</SidebarItem> 
+
+                                 <SidebarItem href={route('tag.create') + `?type=${type.slug}`} className='text-white font-bold text-sm hover:text-gray-900 ' 
+                                      icon={() => <BsTags className="text-white text-2xl group-hover:text-gray-800" />}
+                                >
+                                     Add Tag</SidebarItem> 
+                                  <SidebarItem href={route('highlight.create') + `?type=${type.slug}`} className='text-white font-bold text-sm hover:text-gray-900 ' 
+                                      icon={() => <PiHighlighter className="text-white text-2xl group-hover:text-gray-800" />}
+                                >
+                                     Add Highlight</SidebarItem> 
 
                             </SidebarCollapse>
 
